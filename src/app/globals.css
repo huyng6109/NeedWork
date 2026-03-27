@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    --background: #ffffff;
+    --foreground: #1E293B;
+  }
+
+  body {
+    @apply bg-white text-dark antialiased;
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  }
+
+  * {
+    @apply border-border;
+  }
+}
+
+@layer components {
+  /* Trust ring on avatar */
+  .trust-ring {
+    @apply ring-2 ring-brand-600 ring-offset-2;
+  }
+
+  /* Card */
+  .card {
+    @apply bg-white rounded-xl shadow-card border border-border;
+  }
+
+  /* Badge base */
+  .badge {
+    @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
