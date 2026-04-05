@@ -94,7 +94,7 @@
 
 ### M4: Application Flow (Days 12–14)
 - [ ] Apply button + confirmation
-- [ ] Auto-create "Em đã apply." comment
+- [ ] Auto-create "Dạ em đã apply. Mong anh/chị hãy xem CV của em, em cám ơn nhiều ạ 🤗" comment
 - [ ] "Đã nộp CV" badge on comment
 - [ ] Duplicate application prevention
 

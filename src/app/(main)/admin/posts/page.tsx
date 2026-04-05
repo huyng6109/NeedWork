@@ -6,7 +6,7 @@ export default async function AdminPostsPage() {
 
   const { data: posts } = await supabase
     .from("posts")
-    .select(`*, author:users!posts_author_id_fkey(id,name,avatar_url,frame_color)`)
+    .select(`*, author:users!posts_author_id_fkey(id,name,avatar_url,frame_color,role)`)
     .eq("status", "pending")
     .order("created_at", { ascending: true });
 

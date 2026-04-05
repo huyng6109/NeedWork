@@ -38,7 +38,13 @@ export function ReportList({ initialReports }: Props) {
       {reports.map((report) => (
         <div key={report.id} className="card p-4 space-y-3">
           <div className="flex items-center gap-2 text-xs text-muted">
-            <Avatar src={report.reporter?.avatar_url} name={report.reporter?.name} size="sm" />
+            <Avatar
+              src={report.reporter?.avatar_url}
+              name={report.reporter?.name}
+              size="sm"
+              frameColor={report.reporter?.frame_color ?? null}
+              role={report.reporter?.role}
+            />
             <span className="font-medium text-dark">{report.reporter?.name}</span>
             <span>report bài</span>
             <Link href={`/post/${report.target_post_id}`} className="text-brand-600 hover:underline font-medium">

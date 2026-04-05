@@ -63,7 +63,7 @@ Behavior:
 
 ### FT-05: CV Application Flow
 - Candidate clicks Apply on a `job_offer` post
-- System auto-creates a comment: *"Em đã apply."*
+- System auto-creates a comment: *"Dạ em đã apply. Mong anh/chị hãy xem CV của em, em cám ơn nhiều ạ 🤗"*
 - Badge **"Đã nộp CV"** shown next to candidate's name in comment thread
 - Creates an `Application` record
 
@@ -125,7 +125,7 @@ Behavior:
 
 - A new recruiter always starts with a blue trust ring
 - A recruiter post cannot go live without passing moderation
-- Applying to a job always creates the "Em đã apply." comment with badge
+- Applying to a job always creates the "Dạ em đã apply. Mong anh/chị hãy xem CV của em, em cám ơn nhiều ạ 🤗" comment with badge
 - Recruiter cannot delete/hide posts in MVP
 - 7-day unresponded comments trigger a warning (automated, daily)
 - A confirmed report removes the recruiter's trust ring

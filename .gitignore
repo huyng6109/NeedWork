@@ -16,6 +16,11 @@ node_modules/
 # misc
 .DS_Store
 *.pem
+.vscode/
+.sfdx/
+public/uploads/
+.tmp-next-*.log
+*.docx
 
 # debug
 npm-debug.log*

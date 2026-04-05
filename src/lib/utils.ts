@@ -2,6 +2,20 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { formatDistanceToNow, format } from "date-fns";
 import { vi } from "date-fns/locale";
+import type { SalaryCurrency } from "@/types";
+
+const SALARY_CURRENCY_LOCALES: Partial<Record<SalaryCurrency, string>> = {
+  USD: "en-US",
+  EUR: "de-DE",
+  GBP: "en-GB",
+  JPY: "ja-JP",
+  KRW: "ko-KR",
+  SGD: "en-SG",
+  AUD: "en-AU",
+  CAD: "en-CA",
+  CNY: "zh-CN",
+  THB: "th-TH",
+};
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -15,15 +29,30 @@ export function formatDate(date: string | Date) {
   return format(new Date(date), "dd/MM/yyyy", { locale: vi });
 }
 
-export function formatSalary(min: number | null, max: number | null): string {
-  if (!min && !max) return "Thỏa thuận";
-  const fmt = (n: number) =>
-    n >= 1_000_000
-      ? `${(n / 1_000_000).toFixed(0)}tr`
-      : n.toLocaleString("vi-VN");
-  if (min && max) return `${fmt(min)} – ${fmt(max)}`;
-  if (min) return `Từ ${fmt(min)}`;
-  return `Đến ${fmt(max!)}`;
+function formatSalaryAmount(amount: number, currency: SalaryCurrency) {
+  if (currency === "VND" && amount >= 1_000_000) {
+    const compact = amount / 1_000_000;
+    return `${Number.isInteger(compact) ? compact.toFixed(0) : compact.toFixed(1).replace(/\.0$/, "")}tr`;
+  }
+
+  return amount.toLocaleString(
+    currency === "VND" ? "vi-VN" : SALARY_CURRENCY_LOCALES[currency] ?? "en-US"
+  );
+}
+
+export function formatSalary(
+  min: number | null,
+  max: number | null,
+  currency: SalaryCurrency = "VND"
+): string {
+  if (min == null && max == null) return "Thỏa thuận";
+
+  const fmt = (n: number) => formatSalaryAmount(n, currency);
+  const suffix = ` ${currency}`;
+
+  if (min != null && max != null) return `${fmt(min)} – ${fmt(max)}${suffix}`;
+  if (min != null) return `Từ ${fmt(min)}${suffix}`;
+  return `Đến ${fmt(max!)}${suffix}`;
 }
 
 export function getInitials(name: string | null): string {

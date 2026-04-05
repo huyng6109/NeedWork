@@ -19,7 +19,7 @@ export async function GET(
   const { data: post, error } = await supabase
     .from("posts")
     .select(
-      `*, author:users!posts_author_id_fkey(id,name,title,avatar_url,frame_color,warning_count)`
+      `*, author:users!posts_author_id_fkey(id,name,title,avatar_url,frame_color,role,warning_count)`
     )
     .eq("id", params.id)
     .single();

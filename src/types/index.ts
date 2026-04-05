@@ -2,15 +2,34 @@ export type UserRole = "candidate" | "recruiter" | "admin";
 export type PostType = "job_offer" | "job_seeking";
 export type PostStatus = "pending" | "approved" | "rejected";
 export type JobType = "full_time" | "part_time";
+export type SalaryCurrency =
+  | "VND"
+  | "USD"
+  | "EUR"
+  | "GBP"
+  | "JPY"
+  | "KRW"
+  | "SGD"
+  | "AUD"
+  | "CAD"
+  | "CNY"
+  | "THB";
 export type CommentType = "normal" | "applied";
 export type CommentStatus = "approved" | "rejected";
 export type ReportStatus = "pending" | "confirmed" | "dismissed";
 export type ApplicationStatus = "pending" | "approved" | "rejected";
-export type FrameColor = "blue" | null;
+export type NotificationType =
+  | "post_comment"
+  | "comment_reply"
+  | "application_submitted"
+  | "application_approved"
+  | "application_rejected";
+export type FrameColor = "green" | null;
 
 export interface User {
   id: string;
   email: string;
+  username?: string | null;
   name: string | null;
   title: string | null;
   avatar_url: string | null;
@@ -35,6 +54,7 @@ export interface Post {
   lng: number | null;
   salary_min: number | null;
   salary_max: number | null;
+  salary_currency: SalaryCurrency;
   job_type: JobType | null;
   status: PostStatus;
   created_at: string;
@@ -53,6 +73,9 @@ export interface Comment {
   responded_at: string | null;
   created_at: string;
   has_applied?: boolean;
+  application_cv_url?: string | null;
+  reply_to_comment_id?: string | null;
+  reply_to_author_name?: string | null;
 }
 
 export interface Application {
@@ -62,6 +85,22 @@ export interface Application {
   comment_id: string | null;
   status: ApplicationStatus;
   applied_at: string;
+}
+
+export interface Notification {
+  id: string;
+  user_id: string;
+  actor_id: string | null;
+  actor?: Pick<User, "id" | "name" | "avatar_url" | "frame_color" | "role"> | null;
+  type: NotificationType;
+  title: string;
+  body: string | null;
+  post_id: string | null;
+  comment_id: string | null;
+  application_id: string | null;
+  is_read: boolean;
+  read_at: string | null;
+  created_at: string;
 }
 
 export interface Report {

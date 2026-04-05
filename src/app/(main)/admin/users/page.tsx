@@ -20,7 +20,13 @@ export default async function AdminUsersPage() {
       <div className="card divide-y divide-border">
         {(users ?? []).map((user) => (
           <div key={user.id} className="flex items-center gap-3 p-4">
-            <Avatar src={user.avatar_url} name={user.name} size="sm" frameColor={user.frame_color} />
+            <Avatar
+              src={user.avatar_url}
+              name={user.name}
+              size="sm"
+              frameColor={user.frame_color}
+              role={user.role}
+            />
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-medium text-sm text-dark truncate">{user.name ?? "Chưa đặt tên"}</span>

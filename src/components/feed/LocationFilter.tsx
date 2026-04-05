@@ -56,26 +56,27 @@ export function LocationFilter({
         </Button>
       ) : (
         <>
-          <div className="flex items-center gap-1 bg-brand-50 text-brand-700 border border-brand-200 rounded-full px-3 py-1 text-xs font-medium">
+          <div className="flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium border bg-[var(--location-chip-bg)] text-[var(--location-chip-text)] border-[var(--location-chip-border)]">
             <MapPin size={12} />
             Vị trí đã bật
-            <button onClick={clearLocation} className="ml-1 hover:text-brand-900">
+            <button onClick={clearLocation} className="ml-1 opacity-80 hover:opacity-100">
               <X size={12} />
             </button>
           </div>
+
           <div className="flex gap-1">
-            {RADIUS_OPTIONS.map((r) => (
+            {RADIUS_OPTIONS.map((option) => (
               <button
-                key={r}
-                onClick={() => onRadiusChange(r)}
+                key={option}
+                onClick={() => onRadiusChange(option)}
                 className={cn(
-                  "px-2.5 py-1 rounded-full text-xs font-medium transition-colors",
-                  radius === r
-                    ? "bg-brand-600 text-white"
-                    : "bg-white border border-border text-muted hover:border-brand-400"
+                  "px-2.5 py-1 rounded-full text-xs font-medium transition-colors border",
+                  radius === option
+                    ? "bg-[var(--radius-chip-active-bg)] text-[var(--radius-chip-active-text)] border-[var(--radius-chip-active-bg)]"
+                    : "bg-[var(--radius-chip-bg)] text-[var(--radius-chip-text)] border-[var(--radius-chip-border)] hover:bg-[var(--radius-chip-hover)]"
                 )}
               >
-                {r}km
+                {option}km
               </button>
             ))}
           </div>

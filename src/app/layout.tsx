@@ -14,8 +14,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="vi">
-      <body>
+    <html lang="vi" suppressHydrationWarning>
+      <body className="theme-page min-h-screen" suppressHydrationWarning>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function () {
+                try {
+                  var saved = localStorage.getItem("theme");
+                  var theme = saved === "light" ? "light" : "dark";
+                  document.documentElement.dataset.theme = theme;
+                } catch (e) {
+                  document.documentElement.dataset.theme = "dark";
+                }
+              })();
+            `,
+          }}
+        />
         {children}
         <Toaster position="top-center" />
       </body>

@@ -8,9 +8,9 @@ export default async function AdminReportsPage() {
     .from("reports")
     .select(`
       *,
-      reporter:users!reports_reporter_id_fkey(id,name,avatar_url),
+      reporter:users!reports_reporter_id_fkey(id,name,avatar_url,frame_color,role),
       post:posts!reports_target_post_id_fkey(id,title,author_id,
-        author:users!posts_author_id_fkey(id,name,frame_color))
+        author:users!posts_author_id_fkey(id,name,frame_color,role))
     `)
     .eq("status", "pending")
     .order("created_at", { ascending: true });

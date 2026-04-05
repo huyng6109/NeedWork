@@ -1,12 +1,33 @@
 import { createClient } from "@/lib/supabase/server";
 
-async function getStats() {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/api/admin/stats`,
-    { cache: "no-store" }
-  );
-  if (!res.ok) return null;
-  return res.json();
+async function getStats(supabase: Awaited<ReturnType<typeof createClient>>) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const [users, newUsers, pendingPosts, pendingReports, totalPosts, totalApps] =
+    await Promise.all([
+      supabase.from("users").select("id", { count: "exact", head: true }),
+      supabase
+        .from("users")
+        .select("id", { count: "exact", head: true })
+        .gte("created_at", today.toISOString()),
+      supabase.from("posts").select("id", { count: "exact", head: true }).eq("status", "pending"),
+      supabase
+        .from("reports")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "pending"),
+      supabase.from("posts").select("id", { count: "exact", head: true }),
+      supabase.from("applications").select("id", { count: "exact", head: true }),
+    ]);
+
+  return {
+    total_users: users.count ?? 0,
+    new_users_today: newUsers.count ?? 0,
+    pending_posts: pendingPosts.count ?? 0,
+    pending_reports: pendingReports.count ?? 0,
+    total_posts: totalPosts.count ?? 0,
+    total_applications: totalApps.count ?? 0,
+  };
 }
 
 export default async function AdminDashboard() {
@@ -15,7 +36,7 @@ export default async function AdminDashboard() {
 
   if (!user) return <p>Không có quyền truy cập</p>;
 
-  const stats = await getStats();
+  const stats = await getStats(supabase);
 
   const cards = [
     { label: "Tổng người dùng", value: stats?.total_users ?? 0, color: "text-brand-600" },

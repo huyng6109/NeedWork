@@ -46,7 +46,11 @@ export async function GET(req: NextRequest) {
 
       await supabase
         .from("users")
-        .update({ warning_count: data.warning_count + 1 })
+        .update({
+          warning_count: data.warning_count + 1,
+          frame_color: null,
+          frame_count: 0,
+        })
         .eq("id", recruiterId);
 
       // TODO: Send email notification via Supabase Edge Function or Resend

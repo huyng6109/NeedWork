@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
+import { TRUST_RING } from "@/constants";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -22,6 +23,7 @@ export async function GET(request: Request) {
             null,
           avatar_url: data.user.user_metadata?.avatar_url ?? null,
           role: "candidate",
+          frame_color: TRUST_RING.FRAME_COLOR,
         },
         { onConflict: "id", ignoreDuplicates: true }
       );

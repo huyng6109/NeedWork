@@ -36,7 +36,7 @@
 
 ### Apply Flow
 - [ ] Candidate can apply to job_offer
-- [ ] Auto-comment "Em đã apply." created
+- [ ] Auto-comment "Dạ em đã apply. Mong anh/chị hãy xem CV của em, em cám ơn nhiều ạ 🤗" created
 - [ ] "Đã nộp CV" badge shown on candidate's comments
 - [ ] Applying twice returns 409
 - [ ] Recruiter cannot apply to own post

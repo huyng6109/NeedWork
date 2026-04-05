@@ -16,13 +16,13 @@ interface BadgeProps {
 }
 
 const variantStyles: Record<BadgeVariant, string> = {
-  applied:  "bg-blue-50 text-blue-700 border border-blue-200",
-  approved: "bg-green-50 text-green-700 border border-green-200",
-  rejected: "bg-red-50 text-red-700 border border-red-200",
-  pending:  "bg-yellow-50 text-yellow-700 border border-yellow-200",
-  warning:  "bg-orange-50 text-orange-700 border border-orange-200",
-  blue:     "bg-brand-50 text-brand-700 border border-brand-200",
-  gray:     "bg-gray-100 text-gray-600 border border-gray-200",
+  applied:  "bg-[var(--badge-applied-bg)] text-[var(--badge-applied-text)] border border-[var(--badge-applied-border)]",
+  approved: "bg-[var(--badge-approved-bg)] text-[var(--badge-approved-text)] border border-[var(--badge-approved-border)]",
+  rejected: "bg-[var(--badge-rejected-bg)] text-[var(--badge-rejected-text)] border border-[var(--badge-rejected-border)]",
+  pending:  "bg-yellow-500/15 text-yellow-200 border border-yellow-500/30",
+  warning:  "bg-orange-500/15 text-orange-200 border border-orange-500/30",
+  blue:     "bg-[var(--badge-blue-bg)] text-[var(--badge-blue-text)] border border-[var(--badge-blue-border)]",
+  gray:     "bg-[var(--badge-gray-bg)] text-[var(--badge-gray-text)] border border-[var(--badge-gray-border)]",
 };
 
 export function Badge({ variant = "gray", children, className }: BadgeProps) {

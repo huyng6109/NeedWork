@@ -78,7 +78,7 @@ Response:
 {
   "application_id": "uuid",
   "comment_id": "uuid",
-  "message": "Em đã apply."
+  "message": "Dạ em đã apply. Mong anh/chị hãy xem CV của em, em cám ơn nhiều ạ 🤗"
 }
 ```
 
@@ -99,7 +99,7 @@ Response:
   "comments": [
     {
       "id": "uuid",
-      "content": "Em đã apply.",
+      "content": "Dạ em đã apply. Mong anh/chị hãy xem CV của em, em cám ơn nhiều ạ 🤗",
       "type": "applied",
       "status": null,
       "author": {

@@ -23,7 +23,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Link
             key={item.href}
             href={item.href}
-            className="px-4 py-2 rounded-lg text-sm font-medium text-muted hover:text-dark hover:bg-white whitespace-nowrap transition-colors"
+            className="px-4 py-2 rounded-lg text-sm font-medium text-muted hover:text-dark hover:bg-[#16181C] whitespace-nowrap transition-colors"
           >
             {item.label}
           </Link>

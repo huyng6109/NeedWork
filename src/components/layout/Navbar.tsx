@@ -6,7 +6,9 @@ import { createClient } from "@/lib/supabase/client";
 import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 import type { User } from "@/types";
-import { PenSquare, LogOut } from "lucide-react";
+import { LogOut, Shield } from "lucide-react";
+import { NotificationBell } from "./NotificationBell";
+import { ThemeToggle } from "./ThemeToggle";
 
 interface NavbarProps {
   user: User | null;
@@ -23,30 +25,36 @@ export function Navbar({ user }: NavbarProps) {
   }
 
   return (
-    <nav className="sticky top-0 z-40 w-full bg-white border-b border-border">
+    <nav className="sticky top-0 z-40 w-full theme-nav border-b backdrop-blur">
       <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
-        <Link href="/" className="text-xl font-bold text-brand-600 shrink-0">
+        <Link href="/" className="text-xl font-bold theme-brand shrink-0 tracking-tight">
           NeedWork
         </Link>
 
         <div className="flex items-center gap-2">
+          <ThemeToggle />
           {user ? (
             <>
-              <Link href="/post/create">
-                <Button size="sm" variant="outline" className="gap-1.5">
-                  <PenSquare size={14} />
-                  Đăng bài
-                </Button>
-              </Link>
+              <NotificationBell />
 
-              <Link href={`/profile/${user.id}`}>
+              <Link href="/account">
                 <Avatar
                   src={user.avatar_url}
                   name={user.name}
                   size="sm"
                   frameColor={user.frame_color}
+                  role={user.role}
                 />
               </Link>
+
+              {user.role === "admin" ? (
+                <Link href="/admin">
+                  <Button size="sm" variant="ghost" className="gap-1.5">
+                    <Shield size={14} />
+                    Admin
+                  </Button>
+                </Link>
+              ) : null}
 
               <button
                 onClick={handleLogout}
@@ -57,16 +65,11 @@ export function Navbar({ user }: NavbarProps) {
               </button>
             </>
           ) : (
-            <>
-              <Link href="/login">
-                <Button size="sm" variant="ghost">
-                  Đăng nhập
-                </Button>
-              </Link>
-              <Link href="/register">
-                <Button size="sm">Đăng ký</Button>
-              </Link>
-            </>
+            <Link href="/login">
+              <Button size="sm" variant="outline">
+                Đăng nhập
+              </Button>
+            </Link>
           )}
         </div>
       </div>

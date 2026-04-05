@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
         .from("users")
         .update({
           frame_count: shouldRestore ? 0 : newCount,
-          frame_color: shouldRestore ? "blue" : recruiter.frame_color,
+          frame_color: shouldRestore ? TRUST_RING.FRAME_COLOR : recruiter.frame_color,
         })
         .eq("id", target_id);
     }

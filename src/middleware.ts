@@ -1,7 +1,9 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { isStrictAdmin } from "@/lib/auth/admin";
+import { supabasePublishableKey, supabaseUrl } from "@/lib/supabase/config";
 
-const PROTECTED_ROUTES = ["/profile/edit", "/post/create"];
+const PROTECTED_ROUTES = ["/profile/edit", "/post/create", "/account"];
 const ADMIN_ROUTES = ["/admin"];
 const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === "true";
 
@@ -10,8 +12,8 @@ export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabaseUrl,
+    supabasePublishableKey,
     {
       cookies: {
         getAll() {
@@ -48,11 +50,11 @@ export async function middleware(request: NextRequest) {
   if (isAdmin && user) {
     const { data: profile } = await supabase
       .from("users")
-      .select("role")
+      .select("role, username")
       .eq("id", user.id)
       .single();
 
-    if (profile?.role !== "admin") {
+    if (!isStrictAdmin(profile)) {
       return NextResponse.redirect(new URL("/", request.url));
     }
   }
@@ -62,6 +64,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!_next/|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|css|js|map|ico|txt|xml)$).*)",
   ],
 };

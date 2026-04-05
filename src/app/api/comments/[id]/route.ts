@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { NOTIFICATION_TYPES } from "@/lib/notifications";
+import { createAdminClient, createClient } from "@/lib/supabase/server";
 
 export async function PATCH(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   const supabase = await createClient();
+  const admin = await createAdminClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -18,7 +20,7 @@ export async function PATCH(
   // Get comment + post
   const { data: comment } = await supabase
     .from("comments")
-    .select(`*, post:posts!comments_post_id_fkey(author_id)`)
+    .select(`*, post:posts!comments_post_id_fkey(id,title,author_id)`)
     .eq("id", params.id)
     .single();
 
@@ -32,7 +34,22 @@ export async function PATCH(
     return NextResponse.json({ error: "Bình luận đã được phản hồi rồi" }, { status: 409 });
   }
 
-  const { data, error } = await supabase
+  if (status === "approved" && comment.type === "applied") {
+    const { data: applicant } = await supabase
+      .from("users")
+      .select("cv_url")
+      .eq("id", comment.author_id)
+      .maybeSingle();
+
+    if (!applicant?.cv_url?.trim()) {
+      return NextResponse.json(
+        { error: "Ứng viên chưa có CV để xem trước khi duyệt." },
+        { status: 400 }
+      );
+    }
+  }
+
+  const { data, error } = await admin
     .from("comments")
     .update({ status, responded_at: new Date().toISOString() })
     .eq("id", params.id)
@@ -42,10 +59,33 @@ export async function PATCH(
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   // Also update application status
-  await supabase
+  const { data: application, error: applicationError } = await admin
     .from("applications")
     .update({ status })
-    .eq("comment_id", params.id);
+    .eq("comment_id", params.id)
+    .select("id")
+    .maybeSingle();
+
+  if (applicationError) {
+    return NextResponse.json({ error: applicationError.message }, { status: 500 });
+  }
+
+  await admin.from("notifications").insert({
+    user_id: comment.author_id,
+    actor_id: user.id,
+    type:
+      status === "approved"
+        ? NOTIFICATION_TYPES.APPLICATION_APPROVED
+        : NOTIFICATION_TYPES.APPLICATION_REJECTED,
+    title:
+      status === "approved"
+        ? "CV của bạn đã được chấp nhận"
+        : "CV của bạn đã bị từ chối",
+    body: comment.post?.title ?? null,
+    post_id: comment.post?.id ?? comment.post_id,
+    comment_id: comment.id,
+    application_id: application?.id ?? null,
+  });
 
   return NextResponse.json(data);
 }

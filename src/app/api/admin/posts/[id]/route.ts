@@ -1,19 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
+import { assertAdminUser } from "@/lib/auth/admin-server";
 import { createClient } from "@/lib/supabase/server";
-
-async function assertAdmin(supabase: Awaited<ReturnType<typeof createClient>>) {
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return null;
-  const { data } = await supabase.from("users").select("role").eq("id", user.id).single();
-  return data?.role === "admin" ? user : null;
-}
 
 export async function PATCH(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   const supabase = await createClient();
-  if (!await assertAdmin(supabase)) {
+  if (!await assertAdminUser(supabase)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
