@@ -1,0 +1,6 @@
+NGUYEN HUU PHUC
+Backend Developer
+
+- Node.js, NestJS, PostgreSQL
+- Co kinh nghiem xay API va auth service
+- Tim moi truong co quy trinh va code review ro rang

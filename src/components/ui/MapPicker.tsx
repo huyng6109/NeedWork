@@ -40,6 +40,7 @@ interface GeoapifyResponse {
 }
 
 interface MapPickerProps {
+  notice?: string;
   value: Location | null;
   onChange: (location: Location) => void;
 }
@@ -94,11 +95,13 @@ function MapViewport({ value }: { value: Location | null }) {
   return null;
 }
 
-export default function MapPicker({ value, onChange }: MapPickerProps) {
+export default function MapPicker({ notice, value, onChange }: MapPickerProps) {
   const [mounted, setMounted] = useState(false);
   const [query, setQuery] = useState(value?.name ?? "");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [searching, setSearching] = useState(false);
+  const [hasCompletedSearch, setHasCompletedSearch] = useState(false);
+  const [queryEditedByUser, setQueryEditedByUser] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const suppressNextSearchRef = useRef(false);
 
@@ -112,6 +115,8 @@ export default function MapPicker({ value, onChange }: MapPickerProps) {
   useEffect(() => {
     if (value?.name) {
       setQuery(value.name);
+      setHasCompletedSearch(false);
+      setQueryEditedByUser(false);
     }
   }, [value?.name]);
 
@@ -119,6 +124,7 @@ export default function MapPicker({ value, onChange }: MapPickerProps) {
     if (!searchEnabled || query.trim().length < 3) {
       setResults([]);
       setSearching(false);
+      setHasCompletedSearch(false);
       return;
     }
 
@@ -126,13 +132,15 @@ export default function MapPicker({ value, onChange }: MapPickerProps) {
       suppressNextSearchRef.current = false;
       setResults([]);
       setSearching(false);
+      setHasCompletedSearch(false);
       return;
     }
 
     const controller = new AbortController();
+    setSearching(true);
+    setHasCompletedSearch(false);
     const timeoutId = setTimeout(async () => {
       try {
-        setSearching(true);
         setErrorMessage(null);
 
         const bias = value ? `${value.lng},${value.lat}` : DEFAULT_BIAS;
@@ -158,9 +166,11 @@ export default function MapPicker({ value, onChange }: MapPickerProps) {
 
         const data = (await response.json()) as GeoapifyResponse;
         setResults(data.results ?? []);
+        setHasCompletedSearch(true);
       } catch (error) {
         if ((error as Error).name !== "AbortError") {
           setResults([]);
+          setHasCompletedSearch(true);
           setErrorMessage("Không thể tìm địa chỉ lúc này.");
         }
       } finally {
@@ -210,6 +220,8 @@ export default function MapPicker({ value, onChange }: MapPickerProps) {
     const name = await reverseGeocode(latlng);
 
     suppressNextSearchRef.current = true;
+    setQueryEditedByUser(false);
+    setHasCompletedSearch(false);
     onChange({ lat: latlng.lat, lng: latlng.lng, name });
     setQuery(name);
     setResults([]);
@@ -224,6 +236,8 @@ export default function MapPicker({ value, onChange }: MapPickerProps) {
     };
 
     suppressNextSearchRef.current = true;
+    setQueryEditedByUser(false);
+    setHasCompletedSearch(false);
     onChange(selectedLocation);
     setQuery(selectedLocation.name);
     setResults([]);
@@ -237,6 +251,12 @@ export default function MapPicker({ value, onChange }: MapPickerProps) {
   return (
     <div className="flex h-full flex-col bg-[var(--card-bg)]">
       <div className="space-y-2 p-3 pb-0">
+        {notice && (
+          <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+            {notice}
+          </div>
+        )}
+
         <div className="relative">
           <Search
             size={16}
@@ -246,6 +266,8 @@ export default function MapPicker({ value, onChange }: MapPickerProps) {
             value={query}
             onChange={(event) => {
               suppressNextSearchRef.current = false;
+              setQueryEditedByUser(true);
+              setHasCompletedSearch(false);
               setQuery(event.target.value);
               setErrorMessage(null);
             }}
@@ -281,6 +303,8 @@ export default function MapPicker({ value, onChange }: MapPickerProps) {
 
         {!searching &&
           searchEnabled &&
+          queryEditedByUser &&
+          hasCompletedSearch &&
           query.trim().length >= 3 &&
           results.length === 0 &&
           !errorMessage && (

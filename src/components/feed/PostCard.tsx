@@ -62,7 +62,11 @@ export function PostCard({ post, currentUser, onPinChange }: PostCardProps) {
           {currentUser ? (
             <PinPostButton
               postId={post.id}
-              onPinnedChange={(pinned) => onPinChange?.(post.id, pinned)}
+              onPinnedChange={
+                onPinChange
+                  ? (pinned) => onPinChange(post.id, pinned)
+                  : undefined
+              }
             />
           ) : null}
           <Badge variant={isJobOffer ? "blue" : "gray"}>

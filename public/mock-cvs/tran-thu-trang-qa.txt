@@ -1,0 +1,6 @@
+TRAN THU TRANG
+QA Engineer
+
+- Manual test web, mobile, API
+- Co kinh nghiem viet test case va bug report
+- Dang hoc them Playwright va automation can ban
